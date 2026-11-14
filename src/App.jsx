@@ -245,7 +245,7 @@ export function App() {
     const end = new Date(start.getTime() + durationSeconds * 1000);
 
     if (isSupabaseConfigured && supabase) {
-      await supabase
+      const { error: mErr } = await supabase
         .from('machines')
         .update({
           status: 'IN_USE',
@@ -260,7 +260,12 @@ export function App() {
         })
         .eq('id', machine.id);
 
-      await supabase.from('wash_sessions').insert({
+      if (mErr) {
+        setToast({ title: 'Could not start cycle', message: mErr.message });
+        return;
+      }
+
+      const { error: sErr } = await supabase.from('wash_sessions').insert({
         machine_id: machine.id,
         user_id: currentUser.id,
         user_name: currentUser.name,
@@ -271,6 +276,11 @@ export function App() {
         end_time: end.toISOString(),
         status: 'IN_USE',
       });
+
+      if (sErr) {
+        setToast({ title: 'Session log error', message: sErr.message });
+      }
+      await fetchAll();
     } else {
       setMachines((prev) =>
         prev.map((m) =>
