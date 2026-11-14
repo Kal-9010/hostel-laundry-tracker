@@ -3,10 +3,10 @@ import { X, AlertTriangle, Play, WashingMachine } from 'lucide-react';
 
 const CYCLE_TYPES = ['Wash Cycle', 'Dry / Spin Cycle', 'Wash + Dry'];
 const PRESETS = [
-  { label: '10 sec (Quick Demo)', seconds: 10 },
   { label: '30 mins', seconds: 30 * 60 },
   { label: '45 mins', seconds: 45 * 60 },
   { label: '60 mins', seconds: 60 * 60 },
+  { label: '90 mins', seconds: 90 * 60 },
 ];
 
 export function CycleSetupModal({
@@ -32,12 +32,12 @@ export function CycleSetupModal({
 
   const durationSeconds =
     customMins.trim() !== ''
-      ? Math.min(180, Math.max(1, parseInt(customMins, 10) || 1)) * 60
+      ? Math.min(180, Math.max(30, parseInt(customMins, 10) || 30)) * 60
       : selectedPreset;
 
   const durationLabel =
     customMins.trim() !== ''
-      ? `${Math.min(180, Math.max(1, parseInt(customMins, 10) || 1))} mins`
+      ? `${Math.min(180, Math.max(30, parseInt(customMins, 10) || 30))} mins`
       : PRESETS.find((p) => p.seconds === selectedPreset)?.label || '45 mins';
 
   const canSubmit =
@@ -163,9 +163,9 @@ export function CycleSetupModal({
             </div>
             <input
               type="number"
-              min="1"
+              min="30"
               max="180"
-              placeholder="Or enter custom minutes (1–180)"
+              placeholder="Or enter custom minutes (30–180)"
               value={customMins}
               onChange={(e) => setCustomMins(e.target.value)}
               className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
