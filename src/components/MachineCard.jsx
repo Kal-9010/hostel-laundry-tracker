@@ -12,8 +12,9 @@ import {
   PackageCheck,
   BellRing,
   Flag,
+  CalendarPlus,
 } from 'lucide-react';
-import { formatTimeLeft, formatClockTime, formatRelativeTime, buildWaUrl, cleanPhone10 } from '../lib/utils';
+import { formatTimeLeft, formatClockTime, formatRelativeTime, buildWaUrl, cleanPhone10, downloadReminderIcs } from '../lib/utils';
 
 export function MachineCard({
   machine,
@@ -207,6 +208,15 @@ export function MachineCard({
                   </a>
                 </>
               )}
+
+              <button
+                onClick={() => downloadReminderIcs(machine.label, machine.cycle_type, machine.end_time)}
+                className="inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition"
+                title="Add to Phone Calendar / Reminders"
+              >
+                <CalendarPlus className="w-3.5 h-3.5" />
+                Remind Me
+              </button>
 
               <button
                 onClick={() => onFastForward5s(machine)}

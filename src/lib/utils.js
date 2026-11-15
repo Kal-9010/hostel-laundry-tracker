@@ -66,3 +66,40 @@ export function sendBrowserNotification(title, body) {
     new Notification(title, { body });
   }
 }
+
+export function downloadReminderIcs(machineLabel, cycleType, endTime) {
+  if (!endTime) return;
+  const end = new Date(endTime);
+  const start = new Date(end.getTime() - 5 * 60 * 1000);
+  const fmt = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Hostel Laundry Tracker//EN',
+    'BEGIN:VEVENT',
+    `UID:hlt-${Date.now()}@hostellaundry`,
+    `DTSTAMP:${fmt(new Date())}`,
+    `DTSTART:${fmt(end)}`,
+    `DTEND:${fmt(new Date(end.getTime() + 10 * 60 * 1000))}`,
+    `SUMMARY:Pick up laundry from ${machineLabel}`,
+    `DESCRIPTION:${cycleType || 'Wash Cycle'} on ${machineLabel} is finished!`,
+    'BEGIN:VALARM',
+    'TRIGGER:PT0M',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:Laundry done in ${machineLabel}!`,
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${machineLabel.replace(/\s+/g, '-').toLowerCase()}-reminder.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}

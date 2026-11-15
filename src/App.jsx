@@ -676,7 +676,7 @@ export function App() {
                   currentUser={currentUser}
                   advisoryGrievances={advisoryGrievances}
                   outOfOrderGrievance={outOfOrderGrievance}
-                  onStartScan={(id) => setSetupMachineId(id)}
+                  onStartScan={() => setIsQROpen(true)}
                   onEndEarly={handleEndEarly}
                   onFastForward5s={handleFastForward5s}
                   onMarkPickedUp={handleMarkPickedUp}
